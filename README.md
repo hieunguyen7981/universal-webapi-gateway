@@ -1,5 +1,3 @@
-<img width="1024" height="1536" alt="image" src="https://github.com/user-attachments/assets/c41e33a4-aaeb-46da-9ee9-7f5a06de2e64" /># Universal SQL WebAPI Gateway
-
 Một giải pháp WebAPI duy nhất có thể xử lý toàn bộ nghiệp vụ bằng cách khai báo store procedure trong SQL Server.
 
 ## Sơ đồ tổng quát
