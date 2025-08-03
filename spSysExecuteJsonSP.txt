@@ -1,0 +1,27 @@
+CREATE PROCEDURE spSysExecuteJsonSP
+    @pSp_code NVARCHAR(32),
+    @pParameters NVARCHAR(MAX),
+    @pStatus INT OUTPUT,
+    @pStatus_details NVARCHAR(MAX) OUTPUT
+AS
+BEGIN
+    DECLARE @sp_name NVARCHAR(128)
+
+    SELECT @sp_name = sp_name FROM tblApi WHERE api_code = @pSp_code AND is_active = 1
+
+    IF @sp_name IS NULL
+    BEGIN
+        SET @pStatus = -1
+        SET @pStatus_details = N'Không tìm thấy API tương ứng'
+        RETURN
+    END
+
+    DECLARE @sql NVARCHAR(MAX)
+    SET @sql = N'EXEC ' + QUOTENAME(@sp_name) + N' @pParameters = @pParameters, @pStatus = @pStatus OUTPUT, @pStatus_details = @pStatus_details OUTPUT'
+
+    EXEC sp_executesql @sql,
+        N'@pParameters NVARCHAR(MAX), @pStatus INT OUTPUT, @pStatus_details NVARCHAR(MAX) OUTPUT',
+        @pParameters = @pParameters,
+        @pStatus = @pStatus OUTPUT,
+        @pStatus_details = @pStatus_details OUTPUT
+END

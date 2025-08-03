@@ -1,0 +1,25 @@
+CREATE PROCEDURE spCustomerIns
+    @pParameters NVARCHAR(MAX),
+    @pStatus INT OUTPUT,
+    @pStatus_details NVARCHAR(MAX) OUTPUT
+AS
+BEGIN
+    BEGIN TRY
+        DECLARE @data TABLE (name NVARCHAR(100), phone NVARCHAR(20))
+        INSERT INTO @data (name, phone)
+        SELECT 
+            JSON_VALUE(@pParameters, '$.name'),
+            JSON_VALUE(@pParameters, '$.phone')
+
+        -- Giả sử thêm dữ liệu vào bảng thật
+        INSERT INTO Customer (name, phone)
+        SELECT name, phone FROM @data
+
+        SET @pStatus = 0
+        SET @pStatus_details = N'{ "message": "Thêm khách hàng thành công" }'
+    END TRY
+    BEGIN CATCH
+        SET @pStatus = -2
+        SET @pStatus_details = ERROR_MESSAGE()
+    END CATCH
+END
